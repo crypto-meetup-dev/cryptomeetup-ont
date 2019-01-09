@@ -1,0 +1,68 @@
+<!-- <h1>CryptoMeetup项目说明</h1>
+
+<h3>1. 开启新一轮测试</h3>
+<p>下一轮测试开放249个国家，每个国家Token的起始价格是 0.1 EOS，每次购买使得该国家的价格增长35%。下一次购买的金额先返回上一个玩家的本金，并将增值部分按照如下比例进行分配：</p>
+<ul>
+  <li> 50%给到上一个玩家 </li>
+    <li> 30%给到CMU持币者 </li>
+    <li> 10%进入奖池 </li>
+    <li> 5%给上一轮测试中站岗的 </li>
+    <li> 5%给推荐人 </li>
+</ul>
+<p> 新一轮的测试中加入了倒计时，每次购买行为都将重置倒计时。倒计时时间跟奖池大小相关，遵从 t = 1 min+24 hrs - 奖池 / 2000 * 23.59 hrs，从24小时递减到1分钟。</p>
+
+<p> 注意：倒计时结束时，最后一个购买的玩家获得奖池，所以土地信息将被删档。用户持有的CMU不受影响。</p> -->
+
+<p>Cryptomeetup is a decentralized events platform powered by cutting-edge blockchain technology. Users can publish
+activities on the 3D virtual earth, and they can also buy and sell land assets to campaign for land administrators.We
+hope to combine blockchain games with activities to create a more sustainable developing game model.</p>
+<p>In the Tron version,we will firstly release land trading function. On the 3D interface, we will provide 220 countries,
+which are unique NFT token and the assets on public chain Tron.</p>
+
+<p>The initial price of each country is 10TRX. By transaction, the corresponding country's price will automatically rise.
+The price fluctuation will follow the rules below:</p>
+
+<table border="1">
+  <tr>
+    <td>last transaction price</td>
+    <td>Puchase price</td>
+    <td>Dividends for developers</td>
+    <td>Jackpot</td>
+  </tr>
+  <tr>
+    <td>&lt;20 trx</td>
+    <td>Price * 200 / 95</td>
+    <td>5%</td>
+    <td>2%</td>
+  </tr>
+  <tr>
+    <td>20- 500 trx</td>
+    <td>Price* 135 / 96</td>
+    <td>4%</td>
+    <td>2%</td>
+  </tr>
+  <tr>
+    <td>500-2000 trx</td>
+    <td>Price * 125 / 97 </td>
+    <td>3%</td>
+    <td>2%</td>
+  </tr>
+  <tr>
+    <td>2000-5000 trx</td>
+    <td>Price * 117 / 97</td>
+    <td>3%</td>
+    <td>2%</td>
+  </tr>
+  <tr>
+    <td>>=5000 trx</td>
+    <td>Price * 115 / 98</td>
+    <td>2%</td>
+    <td>2%</td>
+  </tr>
+</table>
+
+<p>The countdown of the jackpool is one month. For every 100 TRX used to buy a country, the countdown is added 60 seconds.
+At the end of the countdown, the last purchaser of the game will receive all the prizes.</p>
+<p>When the countdown is finished, the next round will be opened automatically. At the beginning of each round, the owner
+of the country is remaining the owner of the country at the end of the previous round. But the countdown and the
+starting price of the country will be reset.</p>
