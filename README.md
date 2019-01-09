@@ -1,60 +1,17 @@
-# 创建账户
+# 合约内部函数说明
 
-#### 安装创建用户依赖
-```javascript
-npm install jssha crypto elliptic js-sha3
-```
+## getAll()
+#### 获取所有地区信息格式为[[id, price, 目前拥有人], [id, price, 目前拥有人]]
 
-#### 创建账户配置项
-```javascript
-// createAccount.js 文件 NUMBER 值为创建账户的数量 并在文件内填写公钥和私钥
-```
+## getGlebal()
+#### 获取所有全局信息[倒计时结束时间, 最后一位购买人, 奖池目前金额(如奖池返回""则表示为0)]
 
-#### 启动创建账户(创建成功后 会在根目录生成account.json,此文件就是你创建的账户)
-```javascript
-node createAccount.js
-```
+## buy(id, fromAddress)
+#### 购买地区,id为地区id,fromAddress为购买人的钱包地址
 
 
-# 批量转账
-
-#### 安装批量转账依赖
-```javascript
-npm install tronweb
-```
-
-#### 配置批量转账
-```javascript
-// transaction.js文件 AMOUNT值是给每一个账户转多少钱
-// 上一步生成的账户都会接收到。
-```
-
-#### 执行批量转账
-```javascript
-node transaction.js
-```
-
-# 批量调用
-
-#### 安装批量调用依赖
-
-```javascript
-npm install tronweb
-```
-
-#### 批量调用配置项
-```javascript
-// index.js MAXPRICE变量为最大买入价格 单位为SUN(1000000 SUN = 1 TRX)到了最大买入价,脚本会停止执行
-// index.js NUMBER为最大买入次数,到了次数后脚本会停止执行 单位为SUN(1000000 SUN = 1 TRX)
-```
-
-#### 批量调用注意事项
-```javascript
-// 请保证你的用户列表均有足够TRX余额(批量调用程序并没有判断用户是否余额足够,如果余额不足会报错,并且程序停止运行)
-// 用户列表在account.json文件, 也就是你创建的账户
-```
-
-#### 启动批量调用
-```javascript
-node idnex.js
-```
+# 规则介绍
+#### 初始化220个地区,初始化的地区的拥有人均为开发者,初始化价格为2(以下价格单位均为ONT)
+#### 如用户A购买某地区目前价格为x,则上一个拥有人收入x - 1,合约奖池进入1。然后该地区价格重置为 (x - 1) * 2 + 1
+#### 倒计时初始化为3456000秒(30天)合约产生交易则增加倒计时时间(产生交易为x ONT 则增加 x * 10秒)
+#### 倒计时结束，最后一位购买人获得奖池所有资金。所有地区价格重置为2，倒计时重新重置为3456000秒(30天)
