@@ -116,11 +116,13 @@ export default new Vuex.Store({
           method: 'getGlebal',
           parameters: []
         })
+        console.log(results)
       }
+ 
       const globals = [
         parseInt(reverseHex(`${results[0]}`), 16),
         ab2str(hexstring2ab(`${results[1]}`)),
-        results[2] ? parseInt(`${results[2]}`, 16) : 0,
+        results[2] ? parseInt(reverseHex(`${results[2]}`), 16) : 0,
       ]
 
       commit('setNowGlobal', globals)
