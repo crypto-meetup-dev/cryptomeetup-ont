@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { client, ParameterType } from 'ontology-dapi';
+import { client as clientApp } from 'cyanobridge'
 import countryPointsJson from '@/util/countryPoints.json';
 import ui from './ui';
-import tronApi from '@/util/tronApi';
 
 // console.log(countryPointsJson, 'countryPointsJson')
+const isAPP = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 Vue.use(Vuex);
 
 let userInfoaddress = ''
@@ -66,13 +67,26 @@ export default new Vuex.Store({
   },
   actions: {
     async getLangArr ({ commit }) {
-      const result = await client.api.smartContract.invokeRead({
-        contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
-        gasLimit: 30000,
-        gasPrice: 500,
-        method: 'getAll',
-        parameters: []
-      })
+      let result = null
+      if (isAPP) {
+        result = await clientApp.api.smartContract.invokeRead({
+          scriptHash: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
+          gasLimit: 30000,
+          gasPrice: 500,
+          operation: 'getAll',
+          args: []
+        })
+      } else {
+        result = await client.api.smartContract.invokeRead({
+          contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
+          gasLimit: 30000,
+          gasPrice: 500,
+          method: 'getAll',
+          parameters: []
+        })
+      }
+
+      console.log(result, 'result')
 
       const langarr = []
 
@@ -85,13 +99,24 @@ export default new Vuex.Store({
         ])
       }
       commit('setLandArr', langarr)
-      const results = await client.api.smartContract.invokeRead({
-        contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
-        gasLimit: 30000,
-        gasPrice: 500,
-        method: 'getGlebal',
-        parameters: []
-      })
+      let results = null
+      if (isAPP) {
+        results = await clientApp.api.smartContract.invokeRead({
+          scriptHash: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
+          gasLimit: 30000,
+          gasPrice: 500,
+          operation: 'getGlebal',
+          args: []
+        })
+      } else {
+        results = await client.api.smartContract.invokeRead({
+          contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
+          gasLimit: 30000,
+          gasPrice: 500,
+          method: 'getGlebal',
+          parameters: []
+        })
+      }
       const globals = [
         parseInt(reverseHex(`${results[0]}`), 16),
         ab2str(hexstring2ab(`${results[1]}`)),

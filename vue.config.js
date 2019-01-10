@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 // eslint-disable-line import/no-extraneous-dependencies
-const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+const protocol = process.env.HTTPS === 'true' ? 'http' : 'http';
 // const path = require('path');
 
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
   },
   devServer: {
     host: '0.0.0.0',
-    port: 8080,
+    port: 5000,
     https: true,
     proxy: 'https://cryptomeetup.io',
   },
