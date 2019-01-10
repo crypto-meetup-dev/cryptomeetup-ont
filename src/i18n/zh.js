@@ -120,9 +120,9 @@ export default {
 
   tron_have_name: '赞助者 {countryName}',
   tron_buy_text: '成为新的 {countryName}赞助者, 您需要支付 {price}',
-  tron_desktop: '使用TronPay桌面版进行支付',
-  tron_desktop_text: 'TronPay桌面版使支付更加便利、安全',
-  tron_tronpay: '使用TronPay进行支付',
+  tron_desktop: '使用Cyano Wallet桌面版进行支付',
+  tron_desktop_text: 'Cyano Wallet桌面版使支付更加便利、安全',
+  tron_tronpay: '使用Cyano Wallet进行支付',
   tron_wallet_app: '使用钱包App兑付',
   tron_app: '使用App兑付',
   tron_have: '赞助者',

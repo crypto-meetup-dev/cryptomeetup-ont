@@ -8,8 +8,8 @@
         :key="index" 
         class="mylangd-item"
       >
-        <p>{{$t('my_portal_name')}}: {{getCountryName(item.code)}}</p>
-        <p>{{$t('my_portal_price')}}: {{`${parseInt(item._price._hex, 16) / 1000000} TRX`}}</p>
+        <p>{{$t('my_portal_name')}}: {{getCountryName(item[3])}}</p>
+        <p>{{$t('my_portal_price')}}: {{`${item[1]} ONT`}}</p>
       </div>
       <div v-if="!myLangdArr.length" class="no-langd">
         {{$t('my_portal_no_time')}}
@@ -36,10 +36,10 @@
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://www.reddit.com/user/cryptomeetup"><b-icon icon="reddit" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile"><a target="_blank" href="https://github.com/crypto-meetup-dev"><b-icon icon="github-circle" size="is-small" /></a></div>
       <div class="footer-item is-hidden-mobile">{{$t('cmu_creator')}}</div>
-      <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://tron.network/index?lng=en">TronWeb</a></div>
+      <div class="footer-item is-hidden-mobile">{{$t('powered_by')}} <a target="_blank" href="https://chrome.google.com/webstore/search/Cyano%20Wallet?hl=zh-CN">Cyano Wallet</a></div>
       <div class="footer-item" v-if="nowGlobal">{{$t('count_down')}}: <b>{{ globalCountdown }}</b> </div>
       <div class="footer-item" v-if="nowGlobal">
-        {{$t('prize_pool')}}: <b>{{`${parseInt(nowGlobal._pool._hex, 16) / 1000000} TRX`}}</b>
+        {{$t('prize_pool')}}: <b>{{`${nowGlobal[2]} ONT`}}</b>
       </div>
       <div class="footer-item is-hidden-mobile">
         <b-select class="is-inverted" v-model="$i18n.locale" :placeholder="$t('switch_lang')" size="is-small" rounded>
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="app-footer last-buyer">
-      <div class="footer-item" v-if="nowGlobal">{{$t('last_buyer')}}: <b>{{ getBase58CheckAddress(nowGlobal._lastone) }}</b> </div>
+      <div class="footer-item" v-if="nowGlobal">{{$t('last_buyer')}}: <b>{{ nowGlobal[1] }}</b> </div>
     </div>
     <a
       :class="['app-nav-burger', 'is-hidden-tablet', { 'is-active': mobileNavExpanded }]"
@@ -87,11 +87,10 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { client, ParameterType } from 'ontology-dapi';
 import Global from './Global.js';
 import Aboutview from '@/views/About.vue';
 import Loading from '@/components/Loading.vue';
-import TronWeb from 'tronweb';
-import tronApi from '@/util/tronApi';
 import * as CountryCode from 'i18n-iso-countries';
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
@@ -119,52 +118,39 @@ export default {
     myLangdArr: []
   }),
   async created() {
-    tronApi.setTronWeb(window.tronWeb)
-    if (window.tronWeb.ready) {
-      this.getNowGlobal()
-      this.getLangArr()
-    } else {
+    let provider;
+    try {
+      provider = await client.api.provider.getProvider()
+      console.log('onGetProvider: ' + JSON.stringify(provider))
+    } catch (e) {
       this.$toast.open({
-        message: this.$t('scatter_login_fail'),
+        message: 'No dAPI provider istalled.',
         type: 'is-danger',
-        duration: 3000,
+        duration: 5000,
+        position: 'is-bottom',
         queue: false,
-      })
-      this.tronWebReady = setInterval(() => {
-        if (window.tronWeb.ready) {
-          clearInterval(this.tronWebReady)
-          this.getNowGlobal()
-          this.getLangArr()
-          // 提示用户刷新
-          this.$toast.open({
-            message: this.$t('tronpay_login_success'),
-            type: 'is-danger',
-            duration: 3000,
-            queue: false,
-          })
-        }
-      }, 1000);
+      });
     }
 
+    this.getAddress()
+    this.getLangArr()
     this.countdownUpdater = setInterval(() => {
       if (this.nowGlobal != null) {
         clearInterval(this.countdownUpdater)
-        this.times = parseInt(this.nowGlobal._end._hex, 16) * 1000 - Date.now()
+        this.times = this.nowGlobal[0] * 1000 - Date.now()
         this.countdown()
       }
     }, 1000);
+
   },
   methods: {
-    ...mapActions(['getLangArr', 'getNowGlobal']),
+    ...mapActions(['getLangArr', 'getAddress']),
     CloseAboutView() {
       this.aboutShow = !this.aboutShow;
     },
     getCountryName(countryCode) {
       const locale = CountryCode.langs().includes(this.$i18n.locale) ? this.$i18n.locale : 'en';
       return CountryCode.getName(countryCode, locale);
-    },
-    getBase58CheckAddress (add) {
-      return window.tronWeb.address.fromHex(add)
     },
     CloseTokenView() {
       this.tokenShow = !this.tokenShow;
@@ -207,9 +193,10 @@ export default {
       }
       return i
     },
-    getMylang (landArr) {
-      if (tronWeb.defaultAddress && tronWeb.defaultAddress.hex && landArr.length) {
-        this.myLangdArr = landArr.filter(item => item._owner === tronWeb.defaultAddress.hex)
+    getMylang () {
+      console.log(this.landArr, this.address)
+      if (this.address && this.landArr.length) {
+        this.myLangdArr = this.landArr.filter(item => item[2] === this.address)
       }
     },
     toogleLangd () {
@@ -225,11 +212,11 @@ export default {
   },
   watch: {
     landArr (landArr) {
-      this.getMylang(landArr)
+      this.getMylang()
     }
   },
   computed: {
-    ...mapState(['nowGlobal', 'landArr']),
+    ...mapState(['nowGlobal', 'landArr', 'address']),
     ...mapState('ui', ['navBurgerVisible', 'globalProgressVisible']),
   },
   beforeDestroy () {

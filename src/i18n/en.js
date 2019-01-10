@@ -119,9 +119,9 @@ export default {
 
   tron_have_name: 'Sponsor {countryName}',
   tron_buy_text: 'To become the new sponsor of {countryName}, you need to pay {price}',
-  tron_desktop: 'Pay with TronPay Desktop',
-  tron_desktop_text: 'TronPay Desktop allows convenient transactions securely',
-  tron_tronpay: 'Pay with TronPay',
+  tron_desktop: 'Pay with Cyano Wallet Desktop',
+  tron_desktop_text: 'Cyano Wallet Desktop allows convenient transactions securely',
+  tron_tronpay: 'Pay with Cyano Wallet',
   tron_wallet_app: 'Pay with Wallet Apps',
   tron_app: 'Pay in Apps',
   tron_have: 'Sponsor',

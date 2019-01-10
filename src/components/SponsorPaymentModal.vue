@@ -6,7 +6,7 @@
     <section class="modal-card-body">
       <div class="columns">
         <div class="column">
-          <p>{{$t('tron_buy_text').replace('{countryName}', countryName).replace('{price}', `${parseInt(country._price._hex, 16) / 1000000} TRX`)}}</p>
+          <p>{{$t('tron_buy_text').replace('{countryName}', countryName).replace('{price}', `${country[1]} ONT`)}}</p>
         </div>
       </div>
       <div class="columns">
@@ -39,33 +39,30 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import tronApi from '@/util/tronApi';
+import Api from '@/util/api';
 
 export default {
   name: 'SponsorPaymentModal',
-  props: ['countryName', 'country'],
+  props: ['countryName', 'country', 'address'],
   data: () => ({
     isScatterPaying: false,
   }),
   methods: {
-    ...mapActions(['getLangArr', 'getNowGlobal']),
-    payWithScatterAsync() {
+    ...mapActions(['getLangArr']),
+    async payWithScatterAsync() {
       this.isScatterPaying = true;
-        tronApi.contract.buy(this.country.id).send({
-          shouldPollResponse: false,
-          callValue: parseInt(this.country._price._hex, 16),
-        }).then(resp => {
-          this.$toast.open({
-            message: this.$t('buy_land_withApp_success'),
-            type: 'is-success',
-            duration: 3000,
-            queue: false,
-          });
-          this.getNowGlobal();
-          this.getLangArr();
-          this.$parent.close();
-          this.isScatterPaying = false;
-        })
+      const buymessage = await Api.buy(this.country[0], this.address)
+      this.isScatterPaying = false;
+      if (buymessage.indexOf('success')) {
+        this.$toast.open({
+          message: this.$t('buy_land_withApp_success'),
+          type: 'is-success',
+          duration: 3000,
+          queue: false,
+        });
+        this.$parent.close();
+        this.getLangArr()
+      }
     },
   },
 };

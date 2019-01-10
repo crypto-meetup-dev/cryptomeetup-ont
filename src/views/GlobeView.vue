@@ -29,8 +29,8 @@
         <section class="section">
           <section class="section content" v-if="activeCountryCode && getLangItem(activeCountryCode)">
             <h1 class="title">{{$t('tron_have')}}</h1>
-            <p>{{$t('tron_country').replace('{user account}', getBase58CheckAddress(getLangItem(activeCountryCode)._owner))}}</p>
-            <p><a @click="popupPaymentModal(activeCountryCode)">{{$t('tron_price').replace('{price}', `${parseInt(getLangItem(activeCountryCode)._price._hex, 16) / 1000000} TRX`)}}</a></p>
+            <p>{{$t('tron_country').replace('{user account}', getLangItem(activeCountryCode)[2])}}</p>
+            <p><a @click="popupPaymentModal(activeCountryCode)">{{$t('tron_price').replace('{price}', `${getLangItem(activeCountryCode)[1]} ONT`)}}</a></p>
           </section>
           <h1 class="title">{{$t('tron_name').replace('{countryName}', getCountryName(activeCountryCode))}}</b></h1>
         </section>
@@ -49,7 +49,6 @@ import Globe from '@/components/Globe.vue';
 import SponsorPaymentModal from '@/components/SponsorPaymentModal.vue';
 import MeetupBox from '@/components/MeetupBox.vue';
 import Loading from '@/components/Loading.vue';
-import tronApi from '@/util/tronApi';
 
 CountryCode.registerLocale(require('i18n-iso-countries/langs/en.json'));
 CountryCode.registerLocale(require('i18n-iso-countries/langs/zh.json'));
@@ -98,7 +97,7 @@ export default {
     this.$store.commit('ui/setLatestBuyerVisible', false);
   },
   computed: {
-    ...mapState(['landArr']),
+    ...mapState(['landArr', 'address']),
   },
   methods: {
     ...mapActions(['getLangArr']),
@@ -127,7 +126,8 @@ export default {
         hasModalCard: true,
         props: {
           country: this.getLangItem(code),
-          countryName: this.getCountryName(this.activeCountryCode)
+          countryName: this.getCountryName(this.activeCountryCode),
+          address: this.address
         },
       });
     },
@@ -135,12 +135,12 @@ export default {
       const landArr = landArr2 || this.landArr2 || []
       const priceMap = {};
       landArr.forEach(item => {
-        priceMap[item.code] = parseInt(item._price._hex, 16)
+        priceMap[item[3]] = item[1]
       })
       this.countriesPrice = priceMap;
     },
     getLangItem (code) {
-      return this.landArr.find(item => item.code === code)
+      return this.landArr.find(item => item[3]=== code)
     },
   },
   watch: {
