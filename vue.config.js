@@ -4,7 +4,7 @@ const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 // const path = require('path');
 
 module.exports = {
-  baseUrl: process.env.NODE_ENV === 'production' ? '//tron.dongchangdi.com' : '',
+  baseUrl: process.env.NODE_ENV === 'production' ? '//ont.dongchangdi.com' : '',
   css: {
     loaderOptions: {
       sass: {

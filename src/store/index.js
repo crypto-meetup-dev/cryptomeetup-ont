@@ -66,25 +66,26 @@ export default new Vuex.Store({
   },
   actions: {
     async getLangArr ({ commit }) {
-      const { result } = await client.api.smartContract.invoke({
+      const result = await client.api.smartContract.invokeRead({
         contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
         gasLimit: 30000,
         gasPrice: 500,
         method: 'getAll',
         parameters: []
       })
+
       const langarr = []
-      const data = result[0]
-      for (let i = 0; i < data.length - 1; i++) {
+
+      for (let i = 0; i < result.length - 1; i++) {
         langarr.push([
-          parseInt(reverseHex(`${data[i][0]}`), 16),
-          parseInt(reverseHex(`${data[i][1]}`), 16),
-          ab2str(hexstring2ab(`${data[i][2]}`)),
+          parseInt(reverseHex(`${result[i][0]}`), 16),
+          parseInt(reverseHex(`${result[i][1]}`), 16),
+          ab2str(hexstring2ab(`${result[i][2]}`)),
           countryPointsJson[i].code
         ])
       }
       commit('setLandArr', langarr)
-      const results = await client.api.smartContract.invoke({
+      const results = await client.api.smartContract.invokeRead({
         contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
         gasLimit: 30000,
         gasPrice: 500,
@@ -92,10 +93,11 @@ export default new Vuex.Store({
         parameters: []
       })
       const globals = [
-        parseInt(reverseHex(`${results.result[0][0]}`), 16),
-        ab2str(hexstring2ab(`${results.result[0][1]}`)),
-        results.result[0][2] ? parseInt(reverseHex(`${results.result[0][2]}`), 16) : 0,
+        parseInt(reverseHex(`${results[0]}`), 16),
+        ab2str(hexstring2ab(`${results[1]}`)),
+        results[2] ? parseInt(`${results[2]}`, 16) : 0,
       ]
+
       commit('setNowGlobal', globals)
     },
     async getAddress ({ commit }) {

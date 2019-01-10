@@ -25,9 +25,10 @@ const API = {
     })
   },
   async buy(id, address) {
+
     const result = await client.api.smartContract.invoke({
       contract: '0e133e1e1f510933c309ada4f40bcd314b560fe9',
-      gasLimit: 100000,
+      gasLimit: 31344500,
       gasPrice: 500,
       method: 'buy',
       parameters: [{ type: 'Integer', value: id }, { type: 'String', value: address }]
